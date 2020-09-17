@@ -9,6 +9,8 @@
 #include "config.h"
 #include "command.h"
 #include "common.h"
+#include "scrcpy.h"
+#include "util/log.h"
 #include "util/net.h"
 
 struct server {
@@ -19,7 +21,7 @@ struct server {
     socket_t server_socket; // only used if !tunnel_forward
     socket_t video_socket;
     socket_t control_socket;
-    struct port_range port_range;
+    struct sc_port_range port_range;
     uint16_t local_port; // selected from port_range
     bool tunnel_enabled;
     bool tunnel_forward; // use "adb forward" instead of "adb reverse"
@@ -43,14 +45,19 @@ struct server {
 }
 
 struct server_params {
+    enum sc_log_level log_level;
     const char *crop;
-    struct port_range port_range;
+    const char *codec_options;
+    struct sc_port_range port_range;
     uint16_t max_size;
     uint32_t bit_rate;
     uint16_t max_fps;
     int8_t lock_video_orientation;
     bool control;
     uint16_t display_id;
+    bool show_touches;
+    bool stay_awake;
+    bool force_adb_forward;
 };
 
 // init default values
